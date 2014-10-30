@@ -1,4 +1,14 @@
-﻿RELEASE NOTES VERSIE {{Version.name}}
+﻿VERSIE {{Version.name}}
+
+RELEASE NOTES:
+
+{{#All}}
+	{{#Description}}
+	* {{Description}}
+	{{/Description}}
+{{/All}}
+
+ISSUES:
 
 {{#ByCategory}}
 {{#Name}}
@@ -7,7 +17,6 @@
 {{^Name}}
 [Algemeen]
 {{/Name}}
-
     {{#TrackerGroup}}
     {{#ReleaseNotes}}
     * [{{Source.tracker.Name}}-{{IssueNumber}}] {{Subject}} {{Description}}

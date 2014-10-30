@@ -45,6 +45,9 @@ namespace ReleaseNotesGenerator
         [Option('o', "outputfile",DefaultValue = "ReleaseNotes.txt", HelpText = "The output file")]
         public string OutputFile { get; set; }
 
+        [Option( "query", DefaultValue=null, HelpText = "Specify to use a specific query in Redmine")]
+        public int? QueryId { get; set; }
+
         [HelpOption]
         public string GetUsage()
         {
@@ -70,6 +73,11 @@ namespace ReleaseNotesGenerator
                 options,
                 () =>
                 {
+                    if (Debugger.IsAttached)
+                    {
+                        Logger.LogInfo("Press any key to exit");
+                        Console.ReadKey();
+                    }
                     Environment.Exit(-2);
                 });
 

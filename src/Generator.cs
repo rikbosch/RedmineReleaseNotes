@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -58,8 +59,17 @@ namespace ReleaseNotesGenerator
             do
             {
                 offset = currentPage * pageSize;
-
-                var issues = await this._api.GetClosedIssuesForVersion(this._options.ProjectName, targetVersion.id, offset, pageSize);
+                GetIssuesResponse issues;
+                if (_options.QueryId.HasValue)
+                {
+                    Logger.LogInfo("Using queryId {0} on project {1}",_options.QueryId,_options.ProjectName);
+                    issues = await this._api.GetIssuesByQueryId(this._options.ProjectName, _options.QueryId.Value, offset, pageSize);
+                }
+                else
+                {
+                    issues = await this._api.GetClosedIssuesForVersion(this._options.ProjectName, targetVersion.id, offset, pageSize);
+                }
+        
                 var total = issues.total_count;
 
                 Logger.LogInfo("Fetched {0} issues, total {1}, current page {2}", issues.issues.Length, total, currentPage + 1);
@@ -131,12 +141,17 @@ namespace ReleaseNotesGenerator
         private ReleaseNote CreateReleaseNote(Issue issue, Options options)
         {
             var note = new ReleaseNote();
+            if (issue.custom_fields !=null)
+            {
+                note.Description =
+                    issue.custom_fields.Where(
+                        x =>
+                            string.Equals(x.name, options.ReleasenoteField, StringComparison.InvariantCultureIgnoreCase))
+                        .Select(x => x.value)
+                        .SingleOrDefault();
 
-            note.Description =
-                issue.custom_fields.Where(
-                    x => string.Equals(x.name, options.ReleasenoteField, StringComparison.InvariantCultureIgnoreCase))
-                    .Select(x => x.value)
-                    .SingleOrDefault();
+                note.CustomFields = issue.custom_fields.ToDictionary(x => x.name, x => x.value);
+            }
 
             note.Subject = issue.subject;
             note.IssueNumber = issue.id;
@@ -150,8 +165,8 @@ namespace ReleaseNotesGenerator
             }
 
             note.Source = issue;
-
-            note.CustomFields = issue.custom_fields.ToDictionary(x => x.name, x => x.value);
+         
+       
 
             return note;
         }

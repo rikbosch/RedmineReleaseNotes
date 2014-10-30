@@ -12,6 +12,12 @@ namespace ReleaseNotesGenerator.Redmine
     {
         Task<GetIssuesResponse> GetClosedIssuesForVersion(string project, int version, int offset = 0, int limit = 100);
         Task<GetVersionResponse> GetVersions(string project);
+
+        Task<GetIssuesResponse> GetIssuesByQueryId(
+            string project,
+            int queryId,
+            int offset = 0,
+            int limit = 100);
     }
 
 
@@ -33,6 +39,23 @@ namespace ReleaseNotesGenerator.Redmine
                       version,
                        offset,
                        limit);
+
+            return JsonConvert.DeserializeObject<GetIssuesResponse>(await _client.GetStringAsync(url));
+        }
+
+        public async Task<GetIssuesResponse> GetIssuesByQueryId(
+            string project,
+            int queryId,
+            int offset = 0,
+            int limit = 100)
+        {
+            var url =
+                  string.Format(
+                      "/projects/{0}/issues.json?query_id={1}&offset={2}&limit={3}",
+                    project,
+                     queryId,
+                      offset,
+                      limit);
 
             return JsonConvert.DeserializeObject<GetIssuesResponse>(await _client.GetStringAsync(url));
         }
