@@ -5,6 +5,6 @@ Redmine Release Notes Generator
 
 Custom hacked tool to extract issues and possible release notes from a Redmine instance.
 
-usage:
+for usage see:
 
 `RedmineReleaseNotesGenerator.exe --help`
