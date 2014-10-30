@@ -1,0 +1,17 @@
+﻿RELEASE NOTES VERSIE {{Version.name}}
+
+{{#ByCategory}}
+{{#Name}}
+[{{Name}}]
+{{/Name}}
+{{^Name}}
+[Algemeen]
+{{/Name}}
+
+    {{#TrackerGroup}}
+    {{#ReleaseNotes}}
+    * [{{Source.tracker.Name}}-{{IssueNumber}}] {{Subject}} {{Description}}
+    {{/ReleaseNotes}}
+    {{/TrackerGroup}}
+
+{{/ByCategory}}
